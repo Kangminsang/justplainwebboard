@@ -109,3 +109,19 @@ function buildSearchConditions($type, $keyword) {
     $conditions['params'] = ['%' . $keyword . '%'];
     return $conditions;
 }
+
+// CSRF 토큰 생성 함수
+function generate_csrf_token(): void
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+}
+
+// CSRF 토큰 검증 함수
+function validate_csrf_token(): void
+{
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF 공격 차단됨!');
+    }
+}

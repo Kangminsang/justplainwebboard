@@ -7,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once 'db.php';
 require_once 'functions.php';
 check_login();
+validate_csrf_token(); // CSRF 토큰 검증
 
 $post_id = $_POST['post_id'] ?? null;
 $content = $_POST['content'] ?? '';

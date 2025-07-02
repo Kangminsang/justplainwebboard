@@ -7,12 +7,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 require_once 'db.php';
 require_once 'functions.php';
-//check_login();
 
 // CSRF 토큰 생성
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+generate_csrf_token();
 
 $board_slug = $_GET['board'] ?? null;
 $board_id = null;
@@ -28,9 +25,7 @@ if ($board_slug) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //CSRF 토큰 검증
-    if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("CSRF 공격 차단됨!");
-    }
+    validate_csrf_token();
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
     $post_board_id = $_POST['board_id'] ?? null;

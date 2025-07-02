@@ -92,8 +92,10 @@ foreach ($comments as $comment): ?>
 <!-- 댓글 작성 폼 -->
 <?php if (isset($_SESSION['user_id'])): ?>
     <h3>댓글 작성</h3>
+    <?php generate_csrf_token(); // CSRF 토큰 생성 ?>
     <form action="/comment_create.php" method="post">
         <input type="hidden" name="post_id" value="<?= $post_id ?>">
+        <input type="hidden" name="csrf_token" value="<?= h($_SESSION['csrf_token']) ?>">
         <textarea name="content" rows="4" cols="50" required></textarea><br>
         <input type="submit" value="작성">
     </form>
