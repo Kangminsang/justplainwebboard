@@ -37,15 +37,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die('유효하지 않은 게시판 ID입니다.');
     }
 
+
+    //도배 방지
     $stmt = $pdo->prepare("SELECT created_at FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
     $stmt->execute([$_SESSION['user_id']]);
     $last_post = $stmt->fetch();
 
     if ($last_post) {
-        $last_time = strtotime($last_post['created_at']);
-        $current_time = time();
+        // === 수정된 부분 시작 ===
+        // DateTime 객체를 사용하여 시간대 문제를 해결합니다.
+        // 데이터베이스에서 가져온 시간 문자열로 DateTime 객체를 생성합니다.
+        $last_post_time = new DateTime($last_post['created_at']);
 
-        if ($current_time - $last_time < 5) {
+        // 현재 시간으로 DateTime 객체를 생성합니다.
+        $current_time = new DateTime();
+
+        // 두 시간의 차이를 초 단위로 계산합니다.
+        $interval = $current_time->getTimestamp() - $last_post_time->getTimestamp();
+
+        if ($interval < 5) {
             die("너무 빠르게 작성하고 있습니다. 잠시 후 다시 시도해주세요.");
         }
     }

@@ -124,4 +124,6 @@ function validate_csrf_token(): void
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die('CSRF 공격 차단됨!');
     }
+    //사용한 토큰 제거
+    unset($_SESSION['csrf_token']);
 }
